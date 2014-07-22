@@ -1,0 +1,21 @@
+{"conc":[
+    {"name":"0-30",
+     "fields":[{"field":"$diasmora","expression":" $diasmora >=0 && $diasmora <= 30 "},
+        {"field":"$act_juridico","expression":" $act_juridico==0 "}
+        ],
+       "Type":"Active"
+    } ,
+    {"name":"30-60",
+        "fields":[{"field":"$diasmora","expression":" $diasmora >30 && $diasmora <= 60 "},
+        {"field":"$act_juridico","expression":" $act_juridico==0 "}
+        ],
+       "Type":"Active"
+    },
+    {"name":"60-90",
+        "fields":[{"field":"$diasmora","expression":" $diasmora >60 && $diasmora <= 90 "},
+        {"field":"$act_juridico","expression":" $act_juridico==0 "}
+        ],
+       "Type":"Active"
+    }
+]
+}

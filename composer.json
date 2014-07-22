@@ -1,0 +1,30 @@
+{
+    "name": "vendor/load",
+    "description": "Description of project load.",
+    "authors": [
+        {
+            "name": "hherrera",
+            "email": "hherrera@araujoysegovia.com"
+        }
+    ],
+    "require": {
+        "nesbot/carbon": "dev-master",
+        "guzzle/silex-provider": "dev-master",
+        "guzzle/guzzle": "dev-master",
+        "silex/silex": "dev-master",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "symfony/twig-bridge": "~2.3",
+        "doctrine/dbal": "~2.3",
+        "monolog/monolog": ">=1.0.0"
+    },
+    
+    "autoload": {
+        
+         "psr-0": {
+            "lib": "app/",
+            "controller" : "app/"
+        },
+       
+        "classmap": ["src/","src/model/","src/controller/"]
+            }
+    }

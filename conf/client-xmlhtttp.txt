@@ -1,0 +1,17 @@
+Set objXML = Server.CreateObject("MSXML2.ServerXMLHTTP")
+
+requestText = functionToXML(methodName,paramList)
+
+' Call the remote machine the request
+objXML.open "POST", "https://secure1.revilution.dk/api/index.php",
+false
+
+' This is necessary for some implementations (ZOPE).
+objXML.setRequestHeader "Content-type", "text/xml"
+objXML.setRequestHeader "Content-lenght", len(requestText)
+objXML.setRequestHeader "Connection", "close"
+objXML.send(requestText)
+
+serverResponseText = objXML.responseText
+
+
