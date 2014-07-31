@@ -26,8 +26,6 @@ $c = new cartera($db);
 
 $year= date("Y");
 $month=date("m");
-$month=8;
-
        
         
 // eliminar lstcobro del periodo si esta ... recibir parametros 
