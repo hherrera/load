@@ -12,12 +12,17 @@ $db = new data(array(
    
 ));
 
-$c = new contrato($db,11237);
+$c = new contrato($db, 15352);
 
 
 //print_r($c->getSaldoConta("13800500021",array('year'=>2014,'month'=>6)));
 
 print_r($c->getRecaudoContrato(array('year'=>2014,'month'=>7)));
+
+echo "\n";
+
+print_r($c->getReversionesContrato(array('year'=>2014,'month'=>7)));
+
 
 echo "\n";
 

@@ -169,6 +169,7 @@ and TIPO_DOC IN(3,13,20)
         // calcular recaudo
         
         $recaudo = $c->getRecaudoContrato($periodo);
+        $reversiones = $c->getReversionesContrato($periodo);
         
         $logro = $result['saldo'] <=0? 0:round($recaudo/$result['saldo'],2)*100;
         
@@ -180,6 +181,7 @@ and TIPO_DOC IN(3,13,20)
                 . "recaudo=".$recaudo.","
                 . "canon_a=".$result['canon'] .","
                 . "iva_a=".$result['iva'].","
+                . "reversiones=".$reversiones.","
                 . "logro=".$logro
                 . " where id = ".$id;
                 

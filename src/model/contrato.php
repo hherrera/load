@@ -130,7 +130,7 @@ function __construct (data $conn, $id )
         
     }
     
-   public function getParamter($idparametro){
+   public function getParameter($idparametro){
        
        $q="select * from parametros where id_parametro=".$idparametro;
        
@@ -161,6 +161,27 @@ function __construct (data $conn, $id )
         
     }
    
+    
+    
+    public function getReversionesContrato($periodo){
+        
+        
+        
+        $q="SELECT SUM(l.valor + l.iva)  as r FROM LOG_PAGOS l"
+           . " WHERE YEAR(l.fecha_pago) = ".$periodo['year']  
+           ." AND   MONTH(l.fecha_pago) =".$periodo['month']
+           ." AND l.TIPO_DOC IN(12) "
+          ." AND  l.id_concepto IN (1, 2, 9, 99, 40) "
+           ." AND l.id_contrato = ".$this->_id;                
+
+          $r=$this->_conn->_query($q);
+        
+         $co = mssql_fetch_array($r);     
+        
+        return is_null($co['r'])? 0: $co['r'];
+        
+    }
+    
    public function getCobrador($id){
        
          $q="select * from cobradores where id_cobrador='".$id."'";
@@ -199,7 +220,7 @@ function __construct (data $conn, $id )
         
         // calcular iva si aplica
         
-       $p_iva = $this->getParamter(72)['valor'];
+       $p_iva = $this->getParameter(72)['valor'];
        
        
        if(($co['tipo_contrato']!='V') and (strtoupper($own['regimen_iva'])=='COMUN')){
