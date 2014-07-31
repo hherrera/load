@@ -17,11 +17,8 @@ $db = new data (array(
 $c = new cartera($db);
 
 
-
-
 $t2 = microtime(true);
 $r= $t2-$t1;
-
 
 
 $w = new GearmanWorker();

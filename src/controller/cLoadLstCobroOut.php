@@ -1,23 +1,19 @@
 <?php
+require_once  '../../vendor/autoload.php';
+
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-require_once  '../../vendor/autoload.php';
-
-
-
 if(!isset($argv[1])|| empty($argv[1])){
     die ("Falta año y mes");
 }
 
 $year= $argv[1];
-$month= $argv[2];
 
-$periodo=array('year'=>$year,'month'=>$month);
+$month= $argv[2];
 
 
 
@@ -37,13 +33,19 @@ $tt1 = microtime(true);
 $c = new cartera($db);
 
 
+
+
 // eliminar lstcobro del periodo si esta ... recibir parametros 
 
-$estado = 2;
-$c->deleteCartera($periodo,$estado);
+$periodo = array('year'=>$year,'month'=>$month);
 
-// get contratos activos
-$actives = $c->getAllContractON();
+// OJO INACTIVA
+$estado =3;
+
+$c->deleteCartera($periodo,$estado );
+
+// get contratos INactivos
+$outactives = $c->getAllContractOUT();
 
 // client de Jobs
 $client = new GearmanClient();
@@ -53,11 +55,11 @@ $client->addServer();
 $client->setCompleteCallback("complete"); 
 $client->setStatusCallback("status");
 
-$total =count($actives);
+$total =count($outactives);
 $count=0;
 
 // ciclo ejecucion;
-foreach($actives as $row){
+foreach($outactives as $row){
     
     $param = array('id'=>$row['id_contrato'],'periodo'=>$periodo);
     $json = json_encode($param);
@@ -71,9 +73,6 @@ echo "Sending job ".$row['id_contrato']." -> $count - ".  round(100*($count/$tot
     
     
 }
-
-
-
 
 
 

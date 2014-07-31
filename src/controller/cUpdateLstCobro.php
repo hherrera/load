@@ -24,10 +24,15 @@ $tt1 = microtime(true);
 // crear objeto manejo cartera
 $c = new cartera($db);
 
+$year= date("Y");
+$month=date("m");
+$month=8;
 
+       
+        
 // eliminar lstcobro del periodo si esta ... recibir parametros 
 
-$periodo = array('year'=>'2014','month'=>'7');
+$periodo = array('year'=>$year,'month'=>$month);
 
 
 $hour= $argv[1];

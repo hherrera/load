@@ -23,11 +23,11 @@ echo "\n";
 
 //echo $c->insContrato(array('id'=>11237,'periodo'=>array('year'=>2014,'month'=>6)));
 
-//var_dump($c->getAllContractON());
+var_dump($c->getAllContractOUT());
 
 $id = 20788;
 //print_r($c->getOnlyPay(array('year'=>2014,'month'=>7),1));
-print_r($c->genMetasRangos(2014,7));
+//print_r($c->genMetasRangos(2014,7));
 
 
 
