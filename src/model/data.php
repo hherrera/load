@@ -133,7 +133,9 @@ private function _selectdb(){
             break;
           
        case "mssql":
-                   
+             
+           
+           
              $result=mssql_select_db($this->_database, $this->_dbhandle);
               break;
         
@@ -146,6 +148,27 @@ private function _selectdb(){
 }
 
 
+public function _getData($r){
+    
+     $list = array();
+
+        while ($row = mssql_fetch_array($r)) {
+   
+            foreach ($row as $key => $value) {
+             
+                if(is_string($value)){
+                    $row[$key]= utf8_encode($value);
+                }
+
+            }
+            
+            $list[] = $row;
+        }
+
+    return $list;
+}
+
+
 public function _query($query){
     
 
@@ -155,7 +178,7 @@ public function _query($query){
        
        case "mssql":
          
-          // $this->parseUtf8ToIso88591($query);
+         $this->parseUtf8ToIso88591($query);
            
            $result = mssql_query($query);
            

@@ -55,10 +55,9 @@ and l.id_contrato
  in( select distinct id_contrato 
 from log_pagos 
 where datediff(hour,created,getdate())<=" . $hour . " 
-and TIPO_DOC IN(3,13,20) 
- AND  id_concepto IN (1, 2, 9, 99, 40))";
+and TIPO_DOC IN(3,13,20) ";
         $r = $this->_conn->_query($q);
-        echo $q;
+      
         $list = array();
 
         while ($row = mssql_fetch_array($r)) {
@@ -93,7 +92,7 @@ and TIPO_DOC IN(3,13,20)
         // traer saldo mayor 0
         $q = "select id_contrato from contratos c where c.estado IN( 3,4)  ";
 
-        echo $q;
+   
 
         $r = $this->_conn->_query($q);
         echo "\n 1";
@@ -152,8 +151,16 @@ and TIPO_DOC IN(3,13,20)
 
 
         // calcular recaudo
-
-        $recaudo = $c->getRecaudoContrato($periodo);
+        if($lst['estado']==2){
+               $recaudo = $c->getRecaudoContrato($periodo);
+        }else
+            {
+            $recaudo = $c->getRecaudoContratoOut($periodo);
+        }
+     
+        
+        
+        
         $reversiones = $c->getReversionesContrato($periodo);
 
         $logro = $result['saldo'] <= 0 ? 0 : round($recaudo / $result['saldo'], 2) * 100;
@@ -268,18 +275,22 @@ and TIPO_DOC IN(3,13,20)
         $co = $c->getContrato();
 
 
+        //$mora =  $lst['diasmora_i'];
+
+       $mora = $co['mora'];
+
         // validar reglas de clasificacion
         // obtener etiqueta
         if ($co['estado'] == 3) {
             $label = "Desocupado";
         }
-         else if ($lst['diasmora_i'] >= 0 && $lst['diasmora_i'] <= 30 && $co['act_juridico'] == 0) {
+         else if ($mora>= 0 && $mora<= 31 && $co['act_juridico'] == 0 && $co['estado'] == 2) {
             $label = "0-30";
-        } else if ($lst['diasmora_i'] > 30 && $lst['diasmora_i'] <= 60 && $co['act_juridico'] == 0) {
+        } else if ($mora> 31 && $mora<= 61 && $co['act_juridico'] == 0 && $co['estado'] == 2) {
             $label = "30-60";
-        } else if ($lst['diasmora_i'] > 60 && $co['act_juridico'] == 0) {
+        } else if ($mora> 61 && $co['act_juridico'] == 0 && $co['estado'] == 2) {
             $label = "Juridica";
-        } else if ($co['act_juridico'] == 1) {
+        } else if ($co['act_juridico'] == 1 && $co['estado'] == 2) {
             $label = "Juridica";
         }  else {
             $label = "No establecido";
@@ -292,8 +303,6 @@ and TIPO_DOC IN(3,13,20)
 
         // actualizar contrato
 
-
-
         return $label;
     }
 
@@ -302,6 +311,33 @@ and TIPO_DOC IN(3,13,20)
         return '991';
     }
 
+    /*
+ 
+     * $id lstcobro
+     *    
+     *  */
+    
+    
+    public function setCobradorIdContrato($id_contrato,$periodo){
+        
+        
+        $q= "select id from lstcobro where ano="
+                . "".$periodo['year'].""
+                . " and mes = ".$periodo['month']
+                . " and id_contrato =".$id_contrato;
+        
+      
+        $r = $this->_conn->_query($q);
+        $co = mssql_fetch_array($r);
+       
+        return $this->setCobrador($co['id']);
+        
+        
+        
+        
+    }
+    
+    
     public function setCobrador($id) {
 
 
@@ -322,8 +358,9 @@ and TIPO_DOC IN(3,13,20)
             echo "\n este es 0 ->";
         }
 
-
-
+        //$diasmora=$lst['diasmora_i'];
+        $diasmora=$co['mora'];
+        
         if (!in_array($id_cobrador_act, $cob_especial)) {
 
 
@@ -337,13 +374,13 @@ and TIPO_DOC IN(3,13,20)
                 echo "\n  1. ";
                 // validar reglas de clasificacion
                 //  juridico
-                if (($lst['diasmora_i'] > 60 && $co['act_juridico'] == 0) || ($co['act_juridico'] == 1)) {
+                if (($diasmora > 61 && $co['act_juridico'] == 0) || ($co['act_juridico'] == 1)) {
 
                     echo "\n  2. juridico";
                     $id_cobrador = trim($this->getCobradoresJuridico());
                 }
 
-                if (($lst['diasmora_i'] <= 60 && $co['act_juridico'] == 0)) {
+                if (($diasmora <= 61 && $co['act_juridico'] == 0)) {
                     echo "\n  3. 0-60";
                     $periodo = array('year' => $lst['ano'], 'month' => $lst['mes']);
 
