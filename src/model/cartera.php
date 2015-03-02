@@ -277,9 +277,9 @@ and TIPO_DOC IN(3,13,20) ";
         $co = $c->getContrato();
 
 
-        $mora =  $lst['diasmora_i'];
+       // $mora =  $lst['diasmora_i'];
 
-       //$mora = $co['mora'];
+       $mora = $co['mora'];
 
         // validar reglas de clasificacion
         // obtener etiqueta
@@ -360,8 +360,8 @@ and TIPO_DOC IN(3,13,20) ";
             echo "\n este es 0 ->";
         }
 
-        $diasmora=$lst['diasmora_i'];
-        //$diasmora=$co['mora'];
+        //$diasmora=$lst['diasmora_i'];
+        $diasmora=$co['mora'];
         
         if (!in_array($id_cobrador_act, $cob_especial)) {
 
