@@ -21,17 +21,64 @@ $c = new cartera($db);
 echo "\n";
 
 
-//echo $c->insContrato(array('id'=>11237,'periodo'=>array('year'=>2014,'month'=>6)));
 
-var_dump($c->getAllContractOUT());
 
 $id = 20788;
+
+$ids=array(
+    952	,
+1281	,
+7857	,
+10847	,
+11455	,
+12189	,
+13111	,
+13578	,
+13618	,
+13680	,
+13820	,
+14128	,
+14189	,
+14562	,
+14606	,
+14683	,
+14710	,
+14853	,
+14943	,
+14944	,
+15003	,
+15005	,
+15138	,
+15253	,
+15295	,
+15358	,
+15521	,
+15523	,
+15565	,
+16010	,
+16051	,
+16071	,
+16292	,
+16336	,
+16583	,
+16814	,
+17330	,
+17344	
+
+);
+
+//
+//foreach($ids as $id){
+ //  echo  $c->setCobradorIdContrato($id,array('year'=>2014,'month'=>8)); 
+//}
+
+//echo $c->insContrato(array('id'=>11237,'periodo'=>array('year'=>2014,'month'=>6)));
+
+//var_dump($c->getAllContractOUT());
+
 //print_r($c->getOnlyPay(array('year'=>2014,'month'=>7),1));
 //print_r($c->genMetasRangos(2014,7));
 
-
-
-//echo $c->setCobrador($id);
 
 //echo $c->updateContrato(array('id'=>$id,'periodo'=>array('year'=>2014, 'month'=>7)));
 
