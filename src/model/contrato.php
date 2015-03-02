@@ -161,8 +161,7 @@ function __construct (data $conn, $id )
         
     }
    
-   
-   public function getRecaudoContrato($periodo){
+    public function getRecaudoContrato($periodo){
         
         
         
@@ -171,6 +170,43 @@ function __construct (data $conn, $id )
            ." AND   MONTH(l.fecha_pago) =".$periodo['month']
            ." AND l.TIPO_DOC IN(3,13,20) "
            ." AND  l.id_concepto IN (1, 2, 9, 99, 40) "
+           ." AND l.id_contrato = ".$this->_id;                
+
+          $r=$this->_conn->_query($q);
+        
+         $co = mssql_fetch_array($r);     
+        
+        return is_null($co['r'])? 0: $co['r'];
+        
+    }
+    public function getRecaudoContratoOff($periodo){
+        
+        
+        
+        $q="SELECT SUM(l.valor + l.iva)  as r FROM LOG_PAGOS l"
+           . " WHERE YEAR(l.fecha_pago) = ".$periodo['year']  
+           ." AND   MONTH(l.fecha_pago) =".$periodo['month']
+           ." AND l.TIPO_DOC IN(3,13,20) "
+           ." AND  l.id_concepto NOT IN (1, 2, 9, 99, 40) "
+           ." AND l.id_contrato = ".$this->_id;                
+
+          $r=$this->_conn->_query($q);
+        
+         $co = mssql_fetch_array($r);     
+        
+        return is_null($co['r'])? 0: $co['r'];
+        
+    }
+    
+   
+   public function getRecaudoContratoOut($periodo){
+        
+        
+        
+        $q="SELECT SUM(l.valor + l.iva)  as r FROM LOG_PAGOS l"
+           . " WHERE YEAR(l.fecha_pago) = ".$periodo['year']  
+           ." AND   MONTH(l.fecha_pago) =".$periodo['month']
+           ." AND l.TIPO_DOC IN(3,13,20) "
            ." AND l.id_contrato = ".$this->_id;                
 
           $r=$this->_conn->_query($q);
@@ -221,18 +257,22 @@ function __construct (data $conn, $id )
               
         // traer data contrato y titular del contrato
         $q=" select  c.id_contrato , c.canon+ c.admi as canon, c.tipo_contrato, cl.nombre +' '+ cl.apellido as nombre";
-        $q .= " ,fecha_retiro, datediff(day,fecha_retiro,getdate()) as dias_r, c.estado , c.id_sucursal, c.fianza, c.env_fianza ,c.id_cobrador, c.act_juridico ,cl.id_cliente ";
+        $q .= " ,fecha_retiro, datediff(day,fecha_retiro,getdate()) as dias_r, c.estado , c.id_sucursal, c.fianza, "
+                . " c.env_fianza ,c.id_cobrador, c.act_juridico ,cl.id_cliente ";
         $q .= " from contratos c, clientes cl, clientes_contratos cc ";
         $q .=" where c.id_contrato=".$this->_id;
         $q .=" and  c.id_contrato=cc.id_contrato ";
         $q .=" and cc.tipo_relacion ='P'";
         $q .=" and cc.id_cliente= cl.id_cliente";
         
+       
+         
         $r=$this->_conn->_query($q);
         
+      
         $co = mssql_fetch_array($r);
         
-        
+       
         $own = $this->getOwnContract();
        
         
@@ -240,15 +280,17 @@ function __construct (data $conn, $id )
         
        $p_iva = $this->getParameter(72)['valor'];
        
+     
+       if(($co['tipo_contrato']!='V') && (trim(strtoupper($own['regimen_iva']))=='COMUN')){
        
-       if(($co['tipo_contrato']!='V') and (strtoupper($own['regimen_iva'])=='COMUN')){
-       
-           $iva =$p_iva*$co['canon'];
+           $iva =round(($p_iva/100)*$co['canon'],0);
            
        }else{
             
         $iva=0;
        }
+       
+      
       
        //$saldo=$this->getSalCartera(array('year'=>2014,'month'=>6),$this->_id);
        $saldo=$this->getSaldoFac();
@@ -263,7 +305,8 @@ function __construct (data $conn, $id )
            $mora =$saldo>0?round(($saldo/($co['canon']+$iva))*30) + $dias:0;
            
        }
-           
+        
+              
         
        return array('id_contrato'=>$co['id_contrato'],
            'canon'=>$co['canon'],
