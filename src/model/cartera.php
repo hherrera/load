@@ -54,7 +54,7 @@ and l.id_contrato
  in( select distinct id_contrato 
 from log_pagos 
 where datediff(hour,created,getdate())<=" . $hour . " 
-and TIPO_DOC IN(3,13,20) ";
+and TIPO_DOC IN(3,13,20) ) ";
         $r = $this->_conn->_query($q);
       
         $list = array();
