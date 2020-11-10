@@ -9,7 +9,8 @@
     ],
     "require": {
         "nesbot/carbon": "dev-master",
-         "silex/silex": "~1.2"
+         "silex/silex": "~1.2",
+        "sentry/sentry": "^1.8"
         
     },
     

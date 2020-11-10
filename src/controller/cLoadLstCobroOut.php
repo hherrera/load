@@ -1,27 +1,57 @@
 <?php
 require_once  '../../vendor/autoload.php';
+/*
+$sentryClient = new Raven_Client('https://88960df742bc490ea35594936f8eac2b:8650107386e54f3fa1799ee1d41bbe58@sentry.io/1194622');
+
+$sentryClient->install();
+
+ // bind the logged in user
+$sentryClient->user_context(array('id'=>'hherrera', 'email' => 'hherrera@araujoysegovia.com'));
+
+$sentryClient->tags_context(array(
+    'php_version' => phpversion(),
+    'ejecución'=> 'worker'
+));
+$sentryClient->setEnvironment('production');
+
+*/
 
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 if(!isset($argv[1])|| empty($argv[1])){
     die ("Falta año y mes");
 }
 
 $year= $argv[1];
-
 $month= $argv[2];
+
+if(!isset($argv[3])|| empty($argv[3])){
+    
+    $ip = "10.102.1.3";
+    $f = 'insContractLst';
+    
+}else{
+    $ip = $argv[3];
+    $f = 'insContractLst2';
+}
+if(!isset($argv[4])|| empty($argv[4])){
+    $user = "sa";
+}else{
+   $user=$argv[4]; 
+}
+
+if(!isset($argv[5])|| empty($argv[5])){
+    $pass = "i3kygbb2";
+}else{
+    $pass= $argv[5];
+}
 
 
 
 
 $db = new data (array(
-    'server' =>'10.102.1.3'
- ,'user' =>'sa'
- ,'pass' =>'i3kygbb2'
+    'server' =>$ip
+ ,'user' =>$user
+ ,'pass' =>$pass
  ,'database' =>'sifinca' 
  ,'engine'=>'mssql'
    
@@ -32,16 +62,12 @@ $tt1 = microtime(true);
 // crear objeto manejo cartera
 $c = new cartera($db);
 
-
-
-
 // eliminar lstcobro del periodo si esta ... recibir parametros 
 
 $periodo = array('year'=>$year,'month'=>$month);
 
 // OJO INACTIVA
 $estado =3;
-
 $c->deleteCartera($periodo,$estado );
 
 // get contratos INactivos
@@ -66,15 +92,14 @@ foreach($outactives as $row){
 
    
     // crear task
-   $job_handle = $client->addTask("insContractLst",$json,null,$row['id_contrato']);
+   //$job_handle = $client->addTask($f,$json,null,$row['id_contrato']);
+     $c->insContrato(array('id'=>$row['id_contrato'],'periodo'=>$periodo));
        
     $count++;
 echo "Sending job ".$row['id_contrato']." -> $count - ".  round(100*($count/$total),2)."% \n ";
     
     
 }
-
-
 
 if(!$client->runTasks())
 {

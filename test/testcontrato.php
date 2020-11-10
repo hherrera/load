@@ -14,7 +14,16 @@ $db = new data(array(
    
 ));
 
-$id_contrato = 14283;
+
+$db = new data(array(
+    'server' =>'192.168.100.1'
+ ,'user' =>'sa'
+ ,'pass' =>'75080508360'
+ ,'database' =>'sifinca' 
+ ,'engine'=>'mssql'
+   
+));
+$id_contrato = 9399;
 
 $c = new contrato($db, $id_contrato);
 
@@ -27,11 +36,11 @@ $month=date("n");
 
 echo $year .$month;
 
-$id = 40857;
+$id = 9399;
 
-echo $car->setLabel($id);
+//echo $car->setLabel($id);
 echo "\n ";    
-echo $car->setCobrador($id);
+//echo $car->setCobrador($id);
 echo "\n ";
 
 //print_r($c->getSaldoConta("13800500021",array('year'=>2014,'month'=>6)));
@@ -40,11 +49,12 @@ echo "\n ";
 
 echo "\n";
 
-//print_r($c->getReversionesContrato(array('year'=>2014,'month'=>7)));
+print_r($c->getReversionesContrato(array('year'=>2017,'month'=>3)));
 
 
 echo "\n";
 
+$car->updateContrato(array("id"=>9399,"periodo"=>array('year'=>2017,'month'=>3) ));
 //print_r($c->getSalCartera(array('year'=>2014,'month'=>6)));
 
 //print_r($c->getContrato());

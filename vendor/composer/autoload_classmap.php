@@ -8,9 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'RestClient' => $baseDir . '/src/model/restclient.php',
     'RestClientException' => $baseDir . '/src/model/restclient.php',
-    'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs/SessionHandlerInterface.php',
     'api' => $baseDir . '/src/model/api.php',
-    'barrios' => $baseDir . '/src/model/barrios.php',
+    'barrios' => $baseDir . '/src/model/inmueble.php',
     'cartera' => $baseDir . '/src/model/cartera.php',
     'contable' => $baseDir . '/src/model/contable.php',
     'contrato' => $baseDir . '/src/model/contrato.php',
@@ -19,5 +18,6 @@ return array(
     'empleados' => $baseDir . '/src/model/empleados.php',
     'preguntas' => $baseDir . '/src/model/preguntas.php',
     'propietario' => $baseDir . '/src/model/propietario.php',
+    'segment' => $baseDir . '/src/model/segment.php',
     'zonas' => $baseDir . '/src/model/zonas.php',
 );

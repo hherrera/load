@@ -37,7 +37,9 @@ function __construct (data $conn, $id )
          
         $q="select nat from puc where id_cuenta='".$cuenta."'";
         $r=$this->_conn->_query($q);
+        
         $nat = mssql_fetch_array($r);
+        
         $ldb=$nat['nat'];
 
 
@@ -120,6 +122,7 @@ function __construct (data $conn, $id )
         $q.=" AND i.id_inmueble = ic.id_inmueble";
         $q.=" AND ic.id_convenio = co.id_convenio";
         $q.=" AND co.id_convenio = cc.id_convenio";
+        $q.=" AND cc.tipo_relacion='P'";
         $q.=" AND cc.id_cliente = c.id_cliente";
         
         $r=$this->_conn->_query($q);
@@ -136,6 +139,8 @@ function __construct (data $conn, $id )
        
         $r=$this->_conn->_query($q);
         
+        
+        
         $row = mssql_fetch_array($r);
         
         return $row;
@@ -144,7 +149,7 @@ function __construct (data $conn, $id )
   
     public function getReversionesContrato($periodo){
         
-        
+       
         
         $q="SELECT SUM(l.valor + l.iva) as r FROM LOG_PAGOS l"
            . " WHERE YEAR(l.fecha_pago) = ".$periodo['year']
@@ -236,6 +241,24 @@ function __construct (data $conn, $id )
         
     }
     
+     public function getSaldoOtros(){
+        
+        
+        
+        $q="SELECT sum(l.cargo-l.abono) as valor from log_conceptos l 
+           
+                  where l.cargo -l.abono > 0 and l.id_contrato =  ".$this->_id;               
+
+          $r=$this->_conn->_query($q);
+        
+         $co = mssql_fetch_array($r);     
+        
+        return is_null($co['valor'])? 0: $co['valor'];
+        
+    }
+    
+    
+    
    public function getCobrador($id){
        
          $q="select * from cobradores where id_cobrador='".$id."'";
@@ -253,17 +276,19 @@ function __construct (data $conn, $id )
     *   
     */
     public function getContrato(){
-        
               
         // traer data contrato y titular del contrato
-        $q=" select  c.id_contrato , c.canon+ c.admi as canon, c.tipo_contrato, cl.nombre +' '+ cl.apellido as nombre";
-        $q .= " ,fecha_retiro, datediff(day,fecha_retiro,getdate()) as dias_r, c.estado , c.id_sucursal, c.fianza, "
-                . " c.env_fianza ,c.id_cobrador, c.act_juridico ,cl.id_cliente ";
-        $q .= " from contratos c, clientes cl, clientes_contratos cc ";
+        $q="select  c.id_contrato , c.canon+ c.admi as canon, c.tipo_contrato, cl.nombre +' '+ cl.apellido as nombre";
+        $q .= " ,c.fecha_retiro, datediff(day,c.fecha_retiro,getdate()) as dias_r, c.estado , c.id_sucursal, c.fianza, "
+                . " c.env_fianza ,c.id_cobrador, c.act_juridico ,cl.id_cliente, c.deshaucio, c.ejecutivo"
+                . ",cl.nat_juridica, i.id_sector, i.id_ciudad  ";
+        $q .= " from contratos c, clientes cl, clientes_contratos cc, contratos_inmuebles ci, inmuebles i";
         $q .=" where c.id_contrato=".$this->_id;
         $q .=" and  c.id_contrato=cc.id_contrato ";
         $q .=" and cc.tipo_relacion ='P'";
-        $q .=" and cc.id_cliente= cl.id_cliente";
+        $q .=" and cc.id_cliente= cl.id_cliente"
+                . " and c.id_contrato = ci.id_contrato "
+                . " and ci.id_inmueble = i.id_inmueble";
         
        
          
@@ -306,7 +331,7 @@ function __construct (data $conn, $id )
            
        }
         
-              
+         $otros = $this->getSaldoOtros();     
         
        return array('id_contrato'=>$co['id_contrato'],
            'canon'=>$co['canon'],
@@ -321,9 +346,13 @@ function __construct (data $conn, $id )
            'cobrador'=>$this->getCobrador($co['id_cobrador']),
            'saldo'=>$saldo,
            'mora'=>$mora,
-            'id_cliente'=>$co['id_cliente'],
-           'iva'=>$iva
-               );
+           'id_cliente'=>$co['id_cliente'],
+           'iva'=>$iva,
+           'otros'=>$otros,
+           'deshaucio'=>$co['deshaucio'],
+           'id_ciudad'=>$co['id_ciudad'],
+           'id_sector'=>$co['id_sector']
+    );
        
         
     }

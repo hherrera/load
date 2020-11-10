@@ -115,7 +115,7 @@ public function parseUtf8ToIso88591(&$string){
      if(!is_null($string)){
          
             $iso88591_1 = utf8_decode($string);
-            $iso88591_2 = iconv('UTF-8', 'ISO-8859-1', $string);
+            //$iso88591_2 = iconv('UTF-8', 'ISO-8859-1', $string);
             $string = mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');       
      }
 }
@@ -181,8 +181,12 @@ public function _query($query){
          
          $this->parseUtf8ToIso88591($query);
            
-           $result = mssql_query($query);
            
+           $result = mssql_query($query);
+           if($result === FALSE) { 
+                
+                echo $query;// TODO: better error handling
+             }
           
            $this->_numrows =0;
           break;

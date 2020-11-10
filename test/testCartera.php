@@ -11,76 +11,61 @@ $db = new data (array(
  ,'pass' =>'i3kygbb2'
  ,'database' =>'sifinca' 
  ,'engine'=>'mssql'
-   
 ));
 
 $c = new cartera($db);
-
 //echo $c->getNumContractON();
-
 echo "\n";
 
+$id = 112509;
+$type="";
 
+//$c = new contrato($db, $id);
+//$co = $c->getContrato();
+//var_dump($co);
+       
+$c = new cartera($db);
 
-
-$id = 20788;
-
-$ids=array(
-    952	,
-1281	,
-7857	,
-10847	,
-11455	,
-12189	,
-13111	,
-13578	,
-13618	,
-13680	,
-13820	,
-14128	,
-14189	,
-14562	,
-14606	,
-14683	,
-14710	,
-14853	,
-14943	,
-14944	,
-15003	,
-15005	,
-15138	,
-15253	,
-15295	,
-15358	,
-15521	,
-15523	,
-15565	,
-16010	,
-16051	,
-16071	,
-16292	,
-16336	,
-16583	,
-16814	,
-17330	,
-17344	
-
-);
-
+//echo $c->dif30("2016-10-05", "2016-10-15");¡
+//var_dump( $c->getCarteraContrato($id));
+//var_dump($c->getCarteraContrato($id));
+//return 0;
 //
 //foreach($ids as $id){
  //  echo  $c->setCobradorIdContrato($id,array('year'=>2014,'month'=>8)); 
 //}
-
-//echo $c->insContrato(array('id'=>11237,'periodo'=>array('year'=>2014,'month'=>6)));
-
+//echo $c->insContrato(array('id'=>9150,'periodo'=>array('year'=>2017,'month'=>1)));
 //var_dump($c->getAllContractOUT());
-
 //print_r($c->getOnlyPay(array('year'=>2014,'month'=>7),1));
 //print_r($c->genMetasRangos(2014,7));
 
 
-//echo $c->updateContrato(array('id'=>$id,'periodo'=>array('year'=>2014, 'month'=>7)));
+
+$periodo = array('year'=>date("Y"), 'month'=>date("m"));
+
+
+ $actives = $c->getAllLstCobro($periodo);
+ $total =count($actives);
+ $count=0;
+ foreach($actives as $row){
+    
+    $param = array('id'=>$row['id'],'periodo'=>$periodo);
+    $json = json_encode($param);
+
+   
+    // crear task
+   //$job_handle = $client->addTask("actContractLst",$json,null,$row['id']);
+    
+    echo $c->updateContrato(array('id'=>$row['id'],'periodo'=>$periodo));
+       
+    $count++;
+echo "Sending job ".$row['id']." -> $count - ".  round(100*($count/$total),2)."% \n ";
+    
+    
+}
+ 
+ 
+
 
 /*
 
